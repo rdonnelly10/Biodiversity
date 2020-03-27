@@ -37,3 +37,20 @@ contingency_reptile_mammal = [[30, 146],
 pval_reptile_mammal = chi2_contingency(contingency_reptile_mammal)[1]
 print(pval_reptile_mammal)
 # Significant difference, pval_reptile_mammal < 0.05
+
+#loading the observations.csv into a dataframe
+observations = pd.read_csv('observations.csv')
+
+#creating a column in species that is True if the the word 'Sheep' is in the common_name
+species['is_sheep'] = species.common_names.apply(lambda x: 'Sheep' in x)
+
+species_is_sheep = species[species.is_sheep]
+
+#selecting rows that are sheep and category is mammal
+sheep_species = species[(species.is_sheep) & (species.category == 'Mammal')]
+
+sheep_observations = observations.merge(sheep_species)
+print(sheep_observations.head())
+
+obs_by_park = sheep_observations.groupby('park_name').observations.sum().reset_index()
+print(obs_by_park)
